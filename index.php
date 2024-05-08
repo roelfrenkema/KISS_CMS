@@ -165,7 +165,7 @@ if (is_file($web->fileDir.$web->dirPosition.'/blog.md')) {
 	</div>
 	
     <div id='rightmenu' class='w3-container w3-cell w3-col m2 l2'>
-		<h3>Aanbevolen links</h3>
+		<h3>We endorse</h3>
 		
 		<?php
     $tekst = file_get_contents($web->fileDir.'/info.md');
@@ -181,12 +181,12 @@ if (array_key_exists('ad', $r)) {
         $adds .= $line;
     }
 
-    echo '<h3>Advertenties</h3>';
+    echo '<h3>Adds</h3>';
     echo $converter->convert($adds);
 }
 ?>
-       <h3>Bedel Tikkie</h3>
-      <img class='w3-image' src='img/tikkie.png' alt='Tikkie QR'>
+       <h3>Support me with your stars on GitHub.</h3>
+      <a href="https://github.com/roelfrenkema/KISS_CMS" alt=githublink>Repository</a>
 
 </div>
 
