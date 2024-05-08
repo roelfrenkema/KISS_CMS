@@ -1,0 +1,31 @@
+.heading-permalink {
+  visibility: hidden;
+}
+h1:hover .heading-permalink,
+h2:hover .heading-permalink,
+h3:hover .heading-permalink,
+h4:hover .heading-permalink,
+h5:hover .heading-permalink,
+h6:hover .heading-permalink
+{
+  visibility: visible;
+} 
+.table-of-contents{
+	float:left;
+	border: 2px solid brown;
+    border-radius: 5px;
+    margin: 16px;
+    padding: 16px;
+    max-width: 50% !important;
+}
+.mybimage{
+    max-width: 50% !important;
+    float: right;
+    margin: 16px !important;
+    padding: 16px !important;
+}
+.table-responsive{
+    background: #922 !important;
+    margin-left:5% !important;
+    margin-right:5% !important;
+}

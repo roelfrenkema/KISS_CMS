@@ -1,0 +1,50 @@
+{
+    "name": "unleashedtech/php-coding-standard",
+    "type": "phpcodesniffer-standard",
+    "description": "CodeSniffer ruleset used by Unleashed Technologies",
+    "keywords": ["coding standard", "phpcs"],
+    "homepage": "https://github.com/unleashedtech/php-coding-standard",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Colin O'Dell",
+            "email": "codell@unleashed-technologies.com"
+        }
+    ],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.0.x-dev"
+        }
+    },
+    "support" : {
+        "source": "https://github.com/unleashedtech/php-coding-standard",
+        "issues": "https://github.com/unleashedtech/php-coding-standard/issues"
+    },
+    "autoload": {
+        "psr-4": {
+            "Unleashed\\": "src/Unleashed"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Unleashed\\Tests\\": "tests"
+        }
+    },
+    "require": {
+        "php": "^7.1 || ^8.0",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
+        "slevomat/coding-standard": "^7.0.1",
+        "squizlabs/php_codesniffer": "^3.6.0"
+    },
+    "require-dev": {
+        "symfony/phpunit-bridge": "^5.1"
+    },
+    "scripts": {
+        "test": [
+            "@phpcs",
+            "./vendor/bin/simple-phpunit",
+            "make test"
+        ],
+        "phpcs": "./vendor/bin/phpcs"
+    }
+}

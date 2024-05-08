@@ -1,0 +1,10 @@
+{
+    "require": {
+        "michelf/php-markdown": "^2.0",
+        "league/commonmark": "^2.4",
+        "laravel/prompts": "^0.1.21"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.15"
+    }
+}
