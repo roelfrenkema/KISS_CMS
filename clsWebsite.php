@@ -286,7 +286,7 @@ function getInfo($fileNaam)
 
 	// start unorderd list
 	$navMenu .= '
-	<a class="w3-bar-item w3-button w3-round-large w3-theme-l1 " style="width:80%" href="'.$baseDir.'">Hoofdmenu</a>
+	<a class="w3-bar-item w3-button w3-round-large w3-theme-l1 " style="width:80%" href="'.$baseDir.'">Main menu</a>
 	';
 	parse_str($_SERVER['QUERY_STRING'], $queryArray);
 

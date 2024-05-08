@@ -128,7 +128,7 @@ if (! array_key_exists('image', $r)) {
 </div>
 
   <div id='subhero' class="w3-container w3-center w3-black w3-text-white">
-    <p>Volg mijn reis als ADHDer. Ik beloof je dat het niet saai zal zijn!</p>
+    <p>The easiest CMS in the world.</p>
   </div>	  
 
 <div id='container' class='w3-cell-row'>
