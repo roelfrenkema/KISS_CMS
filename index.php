@@ -32,10 +32,9 @@ $web = new Website;
  * 
  *      This will call this index php living in the ROOT
  */
- //phpinfo();
  
  
-	$web->baseDir = 'https://10.0.2.10/index.php?p=0';
+	$web->baseDir = 'https://kisscms.roelfrenkema.com/index.php?p=0';
 
 
 /*
@@ -66,7 +65,7 @@ $web->parseQuery();
  * 
  * 3072x1024 
  */ 
-    $bannerImage = 'http://10.0.2.10/'.$web->dirPosition.'/banner.png';
+    $bannerImage = 'https://kisscms.roelfrenkema.com/'.$web->dirPosition.'/banner.png';
 
 /*
  * Main page
