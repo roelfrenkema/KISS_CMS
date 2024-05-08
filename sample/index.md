@@ -1,6 +1,6 @@
 # KISS CMS
 
-![eekhoorn](img/eekhoorn2.png){.w3-right .w3-margin-left}
+![eekhoorn](images/eekhoorn2.png){.w3-right .w3-margin-left}
 
 Welcome to KISS CMS. The CMS that is easy to maintain. It offer several 
 blogs and mainpages. It will dynamically resize to fit your mobile and

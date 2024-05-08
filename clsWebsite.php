@@ -64,7 +64,7 @@ kref_class' => 'footnote-backref',
     public $pageInfo = [];
     public $fileAuthor = 'Roelf Renkema';
     public $galleryImg = '';
-    public $dirPosition ='index/'; //static rootdirectory
+    public $dirPosition ='sample/'; //static rootdirectory
     public $fileDir = '/var/www/blog/'; //static filedir
     public $baseDir = 'https://blog.roelfrenkema.com/index.php?p=0';
 
@@ -81,6 +81,8 @@ kref_class' => 'footnote-backref',
 
 	$this->numJaar = date('Y');
 	$this->numMaand = date('m');
+ 	$this->fileDir = $_SERVER['DOCUMENT_ROOT']."/"; 
+
 
     }
     public function parseQuery(){
@@ -92,8 +94,9 @@ kref_class' => 'footnote-backref',
 	}else{
 	    $queryArray['dir'] = '';
 	}
-
 	$this->navDir = $this->fileDir.$this->dirPosition;
+
+//var_dump($this->navDir);
 
 	if (isset($queryArray['blog'])) $this->blogNaam = $queryArray['blog'];
 
@@ -104,6 +107,8 @@ kref_class' => 'footnote-backref',
 	if (isset($queryArray['a'])) $this->archiefPointer = $queryArray['a'];
 
 	$this->linkUri = $this->baseDir.'&dir='.$queryArray['dir'].'&jaar='.$this->numJaar.'&maand='.$this->numMaand.'&blog=';
+
+//var_dump($this->linkUri);
 
     }
     

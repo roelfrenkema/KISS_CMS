@@ -27,6 +27,18 @@ require_once 'clsWebsite.php';
 $web = new Website;
 
 /*
+ * 	URL to your website
+ *	public $baseDir = 'https://10.0.2.10/index.php?p=0';
+ * 
+ *      This will call this index php living in the ROOT
+ */
+ //phpinfo();
+ 
+ 
+	$web->baseDir = 'https://10.0.2.10/index.php?p=0';
+
+
+/*
  * We can now set commonmark environment wit the config set by our class
  */ 
 $environment = new Environment($web->mdConfig);
@@ -54,7 +66,7 @@ $web->parseQuery();
  * 
  * 3072x1024 
  */ 
-    $bannerImage = 'https://blog.roelfrenkema.com/'.$web->dirPosition.'/banner.png';
+    $bannerImage = 'http://10.0.2.10/'.$web->dirPosition.'/banner.png';
 
 /*
  * Main page
@@ -81,6 +93,7 @@ if (is_file($web->navDir.'/'.$web->blogNaam)) {
     $myContent = $web->navDir.'/'.$web->blogNaam;
     $blogPointer = true;
 }
+
 $r = $web->getInfo($myContent);
 
 if (! array_key_exists('image', $r)) {
