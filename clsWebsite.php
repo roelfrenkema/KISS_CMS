@@ -129,8 +129,9 @@ kref_class' => 'footnote-backref',
         foreach ($images as $image) {
             $imageName = basename($image);
             $markdown .= "[![$imageName]($image){: height=\"200px\" width=\"auto\"}]($image)";
+	    $this->galleryImg = $image;
         }
-	$this->galleryImg = $image;
+//	$this->galleryImg = $image;
 	return $markdown."\n";
     }
     
@@ -172,11 +173,17 @@ function getInfo($fileNaam)
             unset($r['lines'][$key]);
         }
     }
-    if(! isset($r['keywords'])) $r['keywords'] = 'page';
+//var_dump($r);    
+//    if(! array_key_exists('keywords', $r) $r['keywords'] = 'page';
     if(! isset($r['image'])) $r['image'] = $this->galleryImg;
     if(! $r['image']) $r['image'] = "images/assets/imageNotFound.png";
 
     $this->pageInfo = $r;
+
+if(! array_key_exists('keywords', $this->pageInfo)) $this->pageInfo['keywords'] = 'page';
+
+//var_dump($this->pageInfo);    
+    
     return $r;
 }
 // Genereert de metatags
@@ -189,7 +196,7 @@ function getInfo($fileNaam)
 	// Normal SEO meta tags
 	echo '<meta name="author" content="'.$this->fileAuthor.'">'."\r\n";
 	echo '<meta name="description" content="'.$this->pageInfo['intro'].'">'."\r\n";
-	echo '<meta name="keywords" content="'.$this->pageInfo['keywords'].'">'."\r\n";
+	echo '<meta name="keywords" content="'.trim($this->pageInfo['keywords']).'">'."\r\n";
 	echo '<meta name="robots" content="index, follow">'."\r\n";
 
 	// Facebook meta tags
