@@ -1,5 +1,6 @@
 # The documentation
 
-Here KISS CMS is documented.
+The place where I document KISS CMS . It also serves as an example how
+a blog directory works
 
-[Keer terug naar huidige maand](https://blog.roelfrenkema.com/index.php?p=0&dir=02.GGZ) 
+
