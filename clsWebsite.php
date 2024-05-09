@@ -66,7 +66,7 @@ kref_class' => 'footnote-backref',
     public $galleryImg = '';
     public $dirPosition ='sample/'; //static rootdirectory
     public $fileDir = '/var/www/blog/'; //static filedir
-    public $baseDir = 'https://blog.roelfrenkema.com/index.php?p=0';
+    public $baseDir = '';
 
     public $navDir = ''; //The dynamic navigation directory
     public $linkUri = ''; //page link that populate query 
@@ -75,16 +75,23 @@ kref_class' => 'footnote-backref',
     public $blogNaam = '';
     public $numJaar = 2000;
     public $numMaand = 1;
+    public $disqus = "";
+/*
+ * Your domain. We will asume you set up a secure website and use
+ * https:// to access it.
+ */ 
+    public $myDomain = ""; 
 
 
-    public function __construct(){
+    public function __construct($myDomain){
 
 	$this->numJaar = date('Y');
 	$this->numMaand = date('m');
  	$this->fileDir = $_SERVER['DOCUMENT_ROOT']."/"; 
-
-
+	$this->baseDir = 'https://'.$myDomain.'/index.php?p=0';
+	$this->myDomain = $myDomain;
     }
+
     public function parseQuery(){
 
 	parse_str($_SERVER['QUERY_STRING'], $queryArray);
@@ -167,6 +174,8 @@ function getInfo($fileNaam)
     }
     if(! isset($r['keywords'])) $r['keywords'] = 'page';
     if(! isset($r['image'])) $r['image'] = $this->galleryImg;
+    if(! $r['image']) $r['image'] = "images/assets/imageNotFound.png";
+
     $this->pageInfo = $r;
     return $r;
 }
@@ -211,8 +220,8 @@ function getInfo($fileNaam)
 
 	// O Jee er zijn geen files gevonden.
 	if (! $cardFiles) {
-	    $cardFiles[] = '/var/www/blog/index/01.Blog/195912110200-Placeholder.md';
-	    $locUri = 'https://blog.roelfrenkema.com/index.php?p=0&dir=01.Blog&jaar=1959&maand=12&blog=';
+	    $cardFiles[] = $_SERVER['DOCUMENT_ROOT']."/".'/195912110200-Placeholder.md';
+	    $locUri = 'https://kisscms.roelfrenkema.com/index.php?p=0&dir=&jaar=1959&maand=12&blog=';
 	}
 
 	// Sorteren, nieuwste eerst
@@ -235,9 +244,9 @@ function getInfo($fileNaam)
 
 	    echo '<div class="w3-container w3-theme-l5">
 				';
+//var_dump($locInfo);
 
 	    if (isset($locInfo['image'])) {
-
                 $baseImage = $this->cardImagev2($locInfo['image']);
                 echo '<img class="w3-image" style="width:100%;" src="'.$baseImage.'" alt="'.$locInfo['image'].'">';
 	    }
@@ -329,7 +338,7 @@ function getInfo($fileNaam)
 	    $myLink = $this->baseDir.'&dir='.$queryArray['dir'];
 	}
 
-	echo "<div id='disqus_thread'></div>
+	echo "<br><br><div id='disqus_thread'></div>
 <script>
     /**
     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
@@ -342,7 +351,7 @@ function getInfo($fileNaam)
     
     (function() { // DON'T EDIT BELOW THIS LINE
     var d = document, s = d.createElement('script');
-    s.src = 'https://roelfblog.disqus.com/embed.js';
+    s.src = 'https://".$this->disqus.".disqus.com/embed.js';
     s.setAttribute('data-timestamp', +new Date());
     (d.head || d.body).appendChild(s);
     })();
@@ -402,7 +411,7 @@ function getInfo($fileNaam)
     	if (!$image) {
     		return null;
     	}
-    
+//var_dump($image);    
     	$locImage = new Imagick($image);
     
     	// Crop the image to a 4:3 aspect ratio
@@ -423,5 +432,12 @@ function getInfo($fileNaam)
     
     	return $dataUriScheme;
     }
-   
+    public function getBanner(){
+	if(is_file($this->fileDir.'/'.$this->dirPosition.'banner.png')){
+	    $bannerImage = '/'.$this->dirPosition.'banner.png';
+	}else{
+	    $bannerImage = "/images/assets/banner.png";
+	}
+	return $bannerImage;
+    }
 }

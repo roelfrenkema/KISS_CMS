@@ -1,30 +1,27 @@
 <?php
-session_start();
 
-require 'vendor/autoload.php'; // autoload classes
+    session_start();
+
+    require 'vendor/autoload.php'; // autoload classes
 
 /*
  * Load the required commonmark classes
  */ 
-use League\CommonMark\Environment\Environment;
-use League\CommonMark\Extension\Attributes\AttributesExtension;
-use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
-use League\CommonMark\Extension\ExternalLink\ExternalLinkExtension;
-use League\CommonMark\Extension\Footnote\FootnoteExtension;
-use League\CommonMark\Extension\HeadingPermalink\HeadingPermalinkExtension;
-use League\CommonMark\Extension\Table\TableExtension;
-use League\CommonMark\Extension\TableOfContents\TableOfContentsExtension;
-use League\CommonMark\MarkdownConverter;
+    use League\CommonMark\Environment\Environment;
+    use League\CommonMark\Extension\Attributes\AttributesExtension;
+    use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+    use League\CommonMark\Extension\ExternalLink\ExternalLinkExtension;
+    use League\CommonMark\Extension\Footnote\FootnoteExtension;
+    use League\CommonMark\Extension\HeadingPermalink\HeadingPermalinkExtension;
+    use League\CommonMark\Extension\Table\TableExtension;
+    use League\CommonMark\Extension\TableOfContents\TableOfContentsExtension;
+    use League\CommonMark\MarkdownConverter;
 
 /*
  * Load own website class
  */ 
-require_once 'clsWebsite.php';
+    require_once 'clsWebsite.php';
 
-/*
- * Create an instance of our class
- */ 
-$web = new Website;
 
 /*
  * 	URL to your website
@@ -32,10 +29,18 @@ $web = new Website;
  * 
  *      This will call this index php living in the ROOT
  */
- 
- 
-	$web->baseDir = 'https://kisscms.roelfrenkema.com/index.php?p=0';
+    $myDomain = "kisscms.roelfrenkema.com";
+	
+/*
+ * Create an instance of our class
+ * Pass your domain name to the construct function
+ */ 
+    $web = new Website($myDomain);
 
+/*
+ * To use the Disqus comments set your shortcode here
+ */ 
+    $web->disqus = "kisscms";
 
 /*
  * We can now set commonmark environment wit the config set by our class
@@ -63,10 +68,18 @@ $web->parseQuery();
 /*
  * Get a standard banner from the current directory.
  * 
- * 3072x1024 
- */ 
-    $bannerImage = 'https://kisscms.roelfrenkema.com/'.$web->dirPosition.'/banner.png';
+ * 1536x512 
+ * 
+    if(is_file($web->fileDir.'/'.$web->dirPosition.'banner.png')){
+	$bannerImage = '/'.$web->dirPosition.'banner.png';
+    }else{
+	$bannerImage = "/images/assets/banner.png";
+    }
+*/
 
+$bannerImage = $web->getBanner();
+    
+//https://kisscms.roelfrenkema.com/sample/Documentation/banner.png
 /*
  * Main page
  */ 
@@ -95,10 +108,9 @@ if (is_file($web->navDir.'/'.$web->blogNaam)) {
 
 $r = $web->getInfo($myContent);
 
-if (! array_key_exists('image', $r)) {
-    $r['image'] = $bannerImage;
-}
-
+//if (! array_key_exists('image', $r)) {
+//    $r['image'] = $bannerImage;
+//}
 
 ?>
 <!doctype html>
@@ -185,7 +197,7 @@ if (array_key_exists('ad', $r)) {
     echo $converter->convert($adds);
 }
 ?>
-       <h3>Support me with your stars on GitHub.</h3>
+       <h3>GitHub.</h3>
       <a href="https://github.com/roelfrenkema/KISS_CMS" alt=githublink>Repository</a>
 
 </div>
