@@ -135,52 +135,63 @@ kref_class' => 'footnote-backref',
 	return $markdown."\n";
     }
     
-function getInfo($fileNaam)
-{
-    // uses a local r
-    // prepareer de arrays
-    $r = ['ad' => []];
-    $r = ['lines' => []];
+    function getInfo($fileNaam)
+    {
+	// uses a local r
+	// prepareer de arrays
+	$r = ['ad' => []];
+	$r = ['lines' => []];
 
-    $r['modtime'] = filemtime($fileNaam);
+	$r['modtime'] = filemtime($fileNaam);
 
-    $r['lines'] = file($fileNaam);
+	$r['lines'] = file($fileNaam);
 
-    $myBase = basename($fileNaam, '.md');
-    $baseExplode = explode('-', $myBase);
-    $r['datum'] = date('Y-m-d - H:i', strtotime($baseExplode[0]));
+	$myBase = basename($fileNaam, '.md');
+	$baseExplode = explode('-', $myBase);
+	$r['datum'] = date('Y-m-d - H:i', strtotime($baseExplode[0]));
 
-    // title, intro, image, ad, gallery
-    foreach ($r['lines'] as $key => $line) {
-        if (preg_match('/^#[^#]/', $line)) {
-            $r['title'] = trim(substr($line, 1));
-        } elseif (preg_match('/^[a-zA-Z0-9]/', $line) && ! array_key_exists('intro', $r)) {
-            $r['intro'] = trim($line);
-        } elseif (((strpos($line, '![') === 0) || (strpos($line, '[![') === 0)) && ! array_key_exists('image', $r)) {
-            $start = strpos($line, '(') + 1;
-            $length = strpos($line, ')') - $start;
-            $r['image'] = trim(substr($line, $start, $length));
-        } elseif (preg_match('/^Hashtags/', $line)) {
-            $hashtags = substr($line, 8);
-            $hashtags = str_replace('#', ',', $hashtags);
-            $hashtags = str_replace(' ', '', $hashtags);
-            $r['keywords'] = substr($hashtags, 2);
-        } elseif (preg_match('/^Gallery/', $line)) {
-	    $replacement = $this->createMarkdownImageGallery($line);
-            $r['lines'][$key] = $replacement;
-        } elseif (strpos($line, 'amzn') !== false) {
-            $r['ad'][] = trim($line);
-            unset($r['lines'][$key]);
-        }
-    }
-//var_dump($r);    
-//    if(! array_key_exists('keywords', $r) $r['keywords'] = 'page';
-    if(! isset($r['image'])) $r['image'] = $this->galleryImg;
-    if(! $r['image']) $r['image'] = "images/assets/imageNotFound.png";
+	// title, intro, image, ad, gallery
+	foreach ($r['lines'] as $key => $line) {
 
-    $this->pageInfo = $r;
+	    //Get our title
+	    if (preg_match('/^#[^#]/', $line)){
+		 $r['title'] = trim(substr($line, 1));
 
-if(! array_key_exists('keywords', $this->pageInfo)) $this->pageInfo['keywords'] = 'page';
+	    // Get our introline
+	    } elseif (preg_match('/^[a-zA-Z0-9]/', $line) && ! array_key_exists('intro', $r)) {
+		$r['intro'] = trim($line);
+
+	    // Find the first image
+	    } elseif (((strpos($line, '![') === 0) || (strpos($line, '[![') === 0)) && ! array_key_exists('image', $r)) {
+		$start = strpos($line, '(') + 1;
+		$length = strpos($line, ')') - $start;
+		$r['image'] = trim(substr($line, $start, $length));
+
+	    // Hashtags to metaline
+	    } elseif (preg_match('/^Hashtags/', $line)) {
+		$hashtags = substr($line, 8);
+		$hashtags = str_replace('#', ',', $hashtags);
+		$hashtags = str_replace(' ', '', $hashtags);
+		$r['keywords'] = substr($hashtags, 2);
+
+	    // Gallery creator
+	    } elseif (preg_match('/^Gallery/', $line)) {
+		$replacement = $this->createMarkdownImageGallery($line);
+		$r['lines'][$key] = $replacement;
+
+	    // Amazon adds system
+	    } elseif (strpos($line, 'amzn') !== false) {
+		$r['ad'][] = trim($line);
+		unset($r['lines'][$key]);         
+	    }
+	}
+	// TODO loose the R
+	if(! isset($r['image'])) $r['image'] = $this->galleryImg;
+	if(! $r['image']) $r['image'] = "images/assets/imageNotFound.png";
+
+	$this->pageInfo = $r;
+
+	if(! array_key_exists('keywords', $this->pageInfo)) $this->pageInfo['keywords'] = 'page';
 
 //var_dump($this->pageInfo);    
     
@@ -257,8 +268,12 @@ if(! array_key_exists('keywords', $this->pageInfo)) $this->pageInfo['keywords'] 
                 $baseImage = $this->cardImagev2($locInfo['image']);
                 echo '<img class="w3-image" style="width:100%;" src="'.$baseImage.'" alt="'.$locInfo['image'].'">';
 	    }
-
-	    echo '<p>'.substr($locInfo['intro'], 0, 200).'</p></div>';
+	    
+	    //pretify text we need to display
+	    $first = wordwrap($locInfo['intro'],160,"\n" );
+	    $second = explode("\n", $first);
+//var_dump($second);
+	    echo '<p>'.trim($second[0]).'</p></div>';
 	    
 	    parse_str($_SERVER['QUERY_STRING'], $queryArray);
 

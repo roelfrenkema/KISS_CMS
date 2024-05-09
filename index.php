@@ -30,12 +30,18 @@
  *      This will call this index php living in the ROOT
  */
     $myDomain = "kisscms.roelfrenkema.com";
+
 	
 /*
  * Create an instance of our class
  * Pass your domain name to the construct function
  */ 
     $web = new Website($myDomain);
+
+/*
+ * Now we need to set the directory where we can find our data
+ */
+    $web->dirPosition = "sample/"; 
 
 /*
  * To use the Disqus comments set your shortcode here
@@ -66,20 +72,11 @@ $environment->addExtension(new TableOfContentsExtension());
 $web->parseQuery();
 
 /*
- * Get a standard banner from the current directory.
- * 
- * 1536x512 
- * 
-    if(is_file($web->fileDir.'/'.$web->dirPosition.'banner.png')){
-	$bannerImage = '/'.$web->dirPosition.'banner.png';
-    }else{
-	$bannerImage = "/images/assets/banner.png";
-    }
-*/
+ * Get a banner image for the page to build.
+ */  
 
 $bannerImage = $web->getBanner();
     
-//https://kisscms.roelfrenkema.com/sample/Documentation/banner.png
 /*
  * Main page
  */ 
@@ -108,10 +105,6 @@ if (is_file($web->navDir.'/'.$web->blogNaam)) {
 
 $r = $web->getInfo($myContent);
 
-//if (! array_key_exists('image', $r)) {
-//    $r['image'] = $bannerImage;
-//}
-
 ?>
 <!doctype html>
 <html lang="nl">
@@ -128,7 +121,7 @@ $r = $web->getInfo($myContent);
         $web->generate_meta_tags();
 ?>
 
-	<title><?php echo $GLOBALS['r']['title']; ?></title>
+	<title><?php echo $web->pageInfo['title']; ?></title>
 
   </head>
 
@@ -136,7 +129,7 @@ $r = $web->getInfo($myContent);
 	  
 <div class="w3-display-container w3-animate-opacity">
   <img src="<?php echo $bannerImage?>" alt="Banner" style="width:100%;min-height:200px;max-height:500px;">
-  <div class="w3-display-middle w3-text-black w3-xxlarge" style="text-shadow:2px 2px 0 #fff"><?php echo $r['title'] ?></div>
+  <div class="w3-display-middle w3-text-black w3-xxlarge" style="text-shadow:2px 2px 0 #fff"><?php echo $web->pageInfo['title'] ?></div>
 </div>
 
   <div id='subhero' class="w3-container w3-center w3-black w3-text-white">
@@ -158,7 +151,7 @@ $r = $web->getInfo($myContent);
 
 		<?php
       $converter = new MarkdownConverter($environment);
-echo $converter->convert(implode('', $r['lines']));
+echo $converter->convert(implode('', $web->pageInfo['lines']));
 
 if (is_file($web->fileDir.$web->dirPosition.'/pagina.md')) {
     $web->disqus();
