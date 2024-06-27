@@ -41,6 +41,7 @@
 /*
  * Now we need to set the directory where we can find our data
  */
+    $web->statDir = "sample/"; 
     $web->dirPosition = "sample/"; 
 
 /*
@@ -102,6 +103,8 @@ if (is_file($web->navDir.'/'.$web->blogNaam)) {
     $myContent = $web->navDir.'/'.$web->blogNaam;
     $blogPointer = true;
 }
+//workaround
+if (is_file($web->navDir.'/raw.php')) $myContent = $web->navDir.'/raw.php';
 
 $r = $web->getInfo($myContent);
 
@@ -149,22 +152,39 @@ $r = $web->getInfo($myContent);
   <br><br>
 
 
-		<?php
-      $converter = new MarkdownConverter($environment);
-echo $converter->convert(implode('', $web->pageInfo['lines']));
+<?php
+/*
+ * Act on page type. We start with raw.php type.
+ */
+    $converter = new MarkdownConverter($environment);
 
-if (is_file($web->fileDir.$web->dirPosition.'/pagina.md')) {
-    $web->disqus();
-}
-if (is_file($web->fileDir.$web->dirPosition.'/blog.md')) {
-    if ($web->blogNaam) {
-        $web->disqus();
-    } else {
-        $web->cardMaker($web->fileDir.$web->dirPosition, $web->numJaar, $web->numMaand);
+    if (is_file($web->fileDir.$web->dirPosition.'/raw.php')) {
+	include_once($web->fileDir.$web->dirPosition.'/raw.php');
+    }else{
+	/* 
+	 * If not a raw file start processing
+	 */ 
+	echo $converter->convert(implode('', $web->pageInfo['lines']));
+	/*
+	 * Check for a static md page
+	 */ 
+	if (is_file($web->fileDir.$web->dirPosition.'/pagina.md')) {
+	    $web->disqus();
+        /* 
+	 * Or do we need blog card gallery?
+	 */ 
+	/*
+	 * Check for a blog md file
+	 */     
+	}elseif (is_file($web->fileDir.$web->dirPosition.'/blog.md') && (! $web->blogNaam)) {
+	    $web->cardMaker($web->fileDir.$web->dirPosition, $web->numJaar, $web->numMaand);
+	/*
+	 * The the page is neither and we close with disqus;
+	 */     
+	} else {
+	    if($web->blogNaam) $web->disqus();
+	}
     }
-}
-
-
 ?>
   <br><br>
 	</div>

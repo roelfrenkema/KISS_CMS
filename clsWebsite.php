@@ -64,8 +64,9 @@ kref_class' => 'footnote-backref',
     public $pageInfo = [];
     public $fileAuthor = 'Roelf Renkema';
     public $galleryImg = '';
+    public $statDir = '';
     public $dirPosition ='sample/'; //static rootdirectory
-    public $fileDir = '/var/www/blog/'; //static filedir
+    public $fileDir = ''; //static filedir set in construct
     public $baseDir = '';
 
     public $navDir = ''; //The dynamic navigation directory
@@ -128,7 +129,7 @@ kref_class' => 'footnote-backref',
 
         foreach ($images as $image) {
             $imageName = basename($image);
-            $markdown .= "[![$imageName]($image){: height=\"200px\" width=\"auto\"}]($image)";
+            $markdown .= "[![$imageName]($image){: height=\"200px\" width=\"auto\"}]($image){:target=\"_blank\"}";
 	    $this->galleryImg = $image;
         }
 //	$this->galleryImg = $image;
@@ -139,7 +140,7 @@ kref_class' => 'footnote-backref',
     {
 	// uses a local r
 	// prepareer de arrays
-	$r = ['ad' => []];
+	$r['ad'] = [];
 	$r = ['lines' => []];
 
 	$r['modtime'] = filemtime($fileNaam);
@@ -185,18 +186,18 @@ kref_class' => 'footnote-backref',
 		unset($r['lines'][$key]);         
 	    }
 	}
-	// TODO loose the R
-	if(! isset($r['image'])) $r['image'] = $this->galleryImg;
-	if(! $r['image']) $r['image'] = "images/assets/imageNotFound.png";
-
+	
+	// TODO loose the R at least keep it local.
 	$this->pageInfo = $r;
 
+	if(! array_key_exists('image', $this->pageInfo)) $this->pageInfo['image'] = $this->galleryImg;
+	if(! array_key_exists('title', $this->pageInfo)) $this->pageInfo['title'] = "no title";
+	if($this->pageInfo['image'] === "") $this->pageInfo['image'] = "images/assets/imageNotFound.png";
 	if(! array_key_exists('keywords', $this->pageInfo)) $this->pageInfo['keywords'] = 'page';
 
-//var_dump($this->pageInfo);    
     
-    return $r;
-}
+	return $r;
+    }
 // Genereert de metatags
     function generate_meta_tags()
     {
@@ -226,58 +227,79 @@ kref_class' => 'footnote-backref',
 
     function cardMaker()
     {
+    /*
+     * Here we create the cards for the blog overview
+     * atm this function is called from the index php
+     */ 
 
-	// Welke files gaan we zoeken
+	/*
+	 * We need to create a search needle
+	 */ 
 	$myNeedle = $this->fileDir.$this->dirPosition.'/'.$this->numJaar.$this->numMaand.'*.md';
 
-	// De link die we al voorbereidt hebben
+	/*
+	 *  We retrieve our current uri
+	 */ 
 	$locUri = $this->linkUri;
 
-	// We gaan de files ophalen
+	/*
+	 *  Collect the filenames we need for our cards.
+	 */ 
 	$cardFiles = glob($myNeedle);
 
-	// O Jee er zijn geen files gevonden.
+	/*
+	 * If we cant find any files we still present a placeholder.
+	 */ 
 	if (! $cardFiles) {
-	    $cardFiles[] = $_SERVER['DOCUMENT_ROOT']."/".'/195912110200-Placeholder.md';
-	    $locUri = 'https://kisscms.roelfrenkema.com/index.php?p=0&dir=&jaar=1959&maand=12&blog=';
+	    $cardFiles[] = $_SERVER['DOCUMENT_ROOT'].'/'.$this->statDir.'195912110200-Placeholder.md';
+	    $locUri = 'https://'.$this->myDomain.'/index.php?p=0&dir=&jaar=1959&maand=12&blog=';
 	}
 
-	// Sorteren, nieuwste eerst
+	/* 
+	 * Sort our cards, newest first for pocessing
+	 */
 	rsort($cardFiles);
 
-	// Start onze presentatie met het zetten van w3-row
+	/*
+	 *  Start The presentation by using w3c w3-row class
+	 */ 
 	echo '<div class="w3-row">';
+	
+	
 
-	// Ga door de gevonden files heen
+	/*
+	 * And start itterating trough the files
+	 */ 
 	foreach ($cardFiles as $fileNaam) {
 
-	    // haal de info over de file door hem te scannen of uit de cache te halen
+	    /*
+	     *  Get info on the file from the getInfo routine
+	     */ 
 	    $locInfo = $this->getInfo($fileNaam);
-
+	    
+	    
 	    // TODO ???????? Moet die niet hoger?
 	    echo '<div class="w3-half w3-container w3-white">';
 	    echo '<div class="w3-card-4">';
 
-	    echo '<header class="w3-container w3-theme"><h4>'.$locInfo['title'].'</h4></header>';
+	    echo '<header class="w3-container w3-theme"><h4>'.$this->pageInfo['title'].'</h4></header>';
 
 	    echo '<div class="w3-container w3-theme-l5">
 				';
-//var_dump($locInfo);
 
-	    if (isset($locInfo['image'])) {
-                $baseImage = $this->cardImagev2($locInfo['image']);
-                echo '<img class="w3-image" style="width:100%;" src="'.$baseImage.'" alt="'.$locInfo['image'].'">';
+	    if (isset($this->pageInfo['image'])) {
+                $baseImage = $this->cardImagev2($this->pageInfo['image']);
+                echo '<img class="w3-image" style="width:100%;" src="'.$baseImage.'" alt="Card Image">';
 	    }
 	    
 	    //pretify text we need to display
-	    $first = wordwrap($locInfo['intro'],160,"\n" );
+	    $first = wordwrap($this->pageInfo['intro'],160,"\n" );
 	    $second = explode("\n", $first);
-//var_dump($second);
 	    echo '<p>'.trim($second[0]).'</p></div>';
 	    
 	    parse_str($_SERVER['QUERY_STRING'], $queryArray);
 
-	    echo '<footer class="w3-container w3-theme-d5"><br><span><a href="'.$locUri.basename($fileNaam).'">Continue!</a></span><span style="float:right">'.$locInfo['datum'].'</span><br><br></footer>';
+	    echo '<footer class="w3-container w3-theme-d5"><br><span><a href="'.$locUri.basename($fileNaam).'">Continue!</a></span><span style="float:right">'.$this->pageInfo['datum'].'</span><br><br></footer>';
 
 	    echo '</div><br></div>';
 	}
@@ -430,10 +452,10 @@ kref_class' => 'footnote-backref',
  
     function cardImagev2($image)
     {
-    	if (!$image) {
-    		return null;
-    	}
-//var_dump($image);    
+    	if (!$image) return;
+	$image = trim($image);
+	if (substr($image,0,1) === "/") $image = substr($image,1);
+	
     	$locImage = new Imagick($image);
     
     	// Crop the image to a 4:3 aspect ratio
